@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game PC Builder</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Game PC Builder</h1>
+            <p>Find the perfect PC build for your favorite games</p>
+        </header>
+
+        <main>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="game">Select Game:</label>
+                    <select id="game" class="form-control">
+                        <optgroup label="Battle Royale & FPS">
+                            <option value="fortnite">Fortnite</option>
+                            <option value="call-of-duty-warzone">Call of Duty: Warzone</option>
+                            <option value="apex-legends">Apex Legends</option>
+                            <option value="pubg-battlegrounds">PUBG: Battlegrounds</option>
+                            <option value="counter-strike-2">Counter-Strike 2</option>
+                            <option value="valorant">Valorant</option>
+                            <option value="rainbow-six-siege">Rainbow Six Siege</option>
+                            <option value="overwatch-2">Overwatch 2</option>
+                            <option value="destiny-2">Destiny 2</option>
+                            <option value="halo-infinite">Halo Infinite</option>
+                        </optgroup>
+                        
+                        <optgroup label="MOBAs & Strategy">
+                            <option value="dota-2">Dota 2</option>
+                            <option value="league-of-legends">League of Legends</option>
+                            <option value="starcraft-2">StarCraft II</option>
+                            <option value="age-of-empires-iv">Age of Empires IV</option>
+                            <option value="civilization-vi">Sid Meier's Civilization VI</option>
+                        </optgroup>
+                        
+                        <optgroup label="Open World & RPGs">
+                            <option value="grand-theft-auto-v">Grand Theft Auto V</option>
+                            <option value="red-dead-redemption-2">Red Dead Redemption 2</option>
+                            <option value="elden-ring">Elden Ring</option>
+                            <option value="cyberpunk-2077">Cyberpunk 2077</option>
+                            <option value="the-witcher-3">The Witcher 3: Wild Hunt</option>
+                            <option value="fallout-4">Fallout 4</option>
+                            <option value="skyrim-special-edition">The Elder Scrolls V: Skyrim SE</option>
+                            <option value="assassins-creed-valhalla">Assassin's Creed Valhalla</option>
+                            <option value="horizon-zero-dawn">Horizon Zero Dawn</option>
+                            <option value="starfield">Starfield</option>
+                            <option value="baldurs-gate-3">Baldur's Gate 3</option>
+                            <option value="elden-ring-shadow-of-the-erdtree">Elden Ring: Shadow of the Erdtree</option>
+                            <option value="dragon-age-inquisition">Dragon Age: Inquisition</option>
+                            <option value="kingdom-come-deliverance">Kingdom Come: Deliverance</option>
+                            <option value="divinity-original-sin-2">Divinity: Original Sin 2</option>
+                            <option value="pathfinder-wotr">Pathfinder: Wrath of the Righteous</option>
+                        </optgroup>
+                        
+                        <optgroup label="Survival & Sandbox">
+                            <option value="minecraft">Minecraft</option>
+                            <option value="rust">Rust</option>
+                            <option value="ark-survival-evolved">ARK: Survival Evolved</option>
+                            <option value="subnautica">Subnautica</option>
+                            <option value="valheim">Valheim</option>
+                            <option value="satisfactory">Satisfactory</option>
+                            <option value="dont-starve-together">Don't Starve Together</option>
+                            <option value="the-forest">The Forest</option>
+                            <option value="sons-of-the-forest">Sons of the Forest</option>
+                            <option value="terraria">Terraria</option>
+                            <option value="no-mans-sky">No Man's Sky</option>
+                            <option value="raft">Raft</option>
+                            <option value="green-hell">Green Hell</option>
+                            <option value="v-rising">V Rising</option>
+                        </optgroup>
+                        
+                        <optgroup label="Racing & Sports">
+                            <option value="forza-horizon-5">Forza Horizon 5</option>
+                            <option value="fifa-23">FIFA 23</option>
+                            <option value="f1-23">F1 23</option>
+                        </optgroup>
+                        
+                        <optgroup label="Simulation & Building">
+                            <option value="cities-skylines">Cities: Skylines</option>
+                            <option value="planet-zoo">Planet Zoo</option>
+                            <option value="euro-truck-simulator-2">Euro Truck Simulator 2</option>
+                        </optgroup>
+                        
+                        <optgroup label="Horror & Story-Driven">
+                            <option value="resident-evil-village">Resident Evil Village</option>
+                            <option value="the-last-of-us-part-i">The Last of Us Part I</option>
+                            <option value="phasmophobia">Phasmophobia</option>
+                        </optgroup>
+                        
+                        <optgroup label="Console Games on PC">
+                            <option value="minecraft-dungeons">Minecraft Dungeons</option>
+                            <option value="halo-the-master-chief-collection">Halo: The Master Chief Collection</option>
+                            <option value="gears-5">Gears 5</option>
+                            <option value="sea-of-thieves">Sea of Thieves</option>
+                            <option value="god-of-war">God of War</option>
+                            <option value="spider-man-remastered">Marvel's Spider-Man Remastered</option>
+                            <option value="horizon-zero-dawn-complete">Horizon Zero Dawn Complete Edition</option>
+                            <option value="death-stranding">Death Stranding</option>
+                        </optgroup>
+                        
+                        <optgroup label="Indie & Casual">
+                            <option value="stardew-valley">Stardew Valley</option>
+                            <option value="hades">Hades</option>
+                            <option value="hades-ii">Hades II</option>
+                            <option value="hollow-knight">Hollow Knight</option>
+                            <option value="celeste">Celeste</option>
+                            <option value="dead-cells">Dead Cells</option>
+                            <option value="stray">Stray</option>
+                            <option value="cult-of-the-lamb">Cult of the Lamb</option>
+                            <option value="dave-the-diver">Dave the Diver</option>
+                            <option value="tunic">TUNIC</option>
+                            <option value="sifu">Sifu</option>
+                            <option value="kenshi">Kenshi</option>
+                            <option value="project-zomboid">Project Zomboid</option>
+                            <option value="rimworld">RimWorld</option>
+                            <option value="factorio">Factorio</option>
+                            <option value="dredge">DREDGE</option>
+                            <option value="vampire-survivors">Vampire Survivors</option>
+                            <option value="among-us">Among Us</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">Your Budget (£):</label>
+                    <input type="number" id="budget" class="form-control" min="300" value="800" step="50">
+                    <small>Minimum: $300</small>
+                </div>
+
+                <button id="build-btn" class="btn-primary">Build My PC</button>
+            </div>
+
+            <div id="result" class="result-container hidden">
+                <h2>Your Custom Build</h2>
+                <div id="build-details" class="build-details"></div>
+                <div id="total-cost" class="total-cost"></div>
+                <div id="build-link" class="build-link"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

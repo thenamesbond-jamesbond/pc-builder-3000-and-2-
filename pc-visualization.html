@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Build Visualization</title>
+    <style>
+        .promo-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .promo-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .promo-content input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 80%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .promo-content button {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .promo-content button:hover {
+            background: #45a049;
+        }
+        #promoMessage {
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .ai-image-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .ai-image-container img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+    <style>
+        :root {
+            --primary-color: #0c4851;
+            --secondary-color: #257d9b;
+            --rgb-color: #00ff00;
+            --case-color: #2c3e50;
+            --glass-tint: rgba(0, 200, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .pc-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            perspective: 1000px;
+        }
+
+        .pc-case {
+            background-color: var(--case-color);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .pc-case::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--glass-tint), transparent);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .pc-front {
+            position: relative;
+            z-index: 2;
+        }
+
+        .pc-image {
+            width: 100%;
+            min-height: 400px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pc-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .rgb-lights {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, 
+                red, orange, yellow, green, blue, indigo, violet);
+            background-size: 200% 100%;
+            animation: rgbFlow 3s linear infinite;
+            opacity: 0.8;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--primary-color);
+        }
+
+        input[type="color"] {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .rgb-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--secondary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        @keyframes rgbFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .view-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .view-btn {
+            background: none;
+            border: 2px solid var(--secondary-color);
+            color: var(--secondary-color);
+            padding: 5px 15px;
+        }
+
+        .view-btn.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Promo Code Modal -->
+    <div id="promoModal" class="promo-modal">
+        <div class="promo-content">
+            <h2>Enter Promo Code</h2>
+            <p>Enter the promo code to unlock AI-generated PC images</p>
+            <input type="text" id="promoCode" placeholder="Enter promo code">
+            <button id="submitPromo">Unlock</button>
+            <p id="promoMessage"></p>
+            <p>Press 'w' after unlocking to view AI-generated images</p>
+        </div>
+    </div>
+
+    <!-- AI Image Container -->
+    <div id="aiImageContainer" class="ai-image-container">
+        <h3>AI-Generated PC Visualization</h3>
+        <img id="aiPcImage" src="" alt="AI-Generated PC">
+    </div>
+    <div class="pc-container">
+        <div class="pc-case">
+            <div class="rgb-lights" id="rgbLights"></div>
+            <div class="pc-front">
+                <div class="view-options">
+                    <button class="view-btn active" onclick="changeView('front')">Front View</button>
+                    <button class="view-btn" onclick="changeView('side')">Side View</button>
+                    <button class="view-btn" onclick="changeView('inside')">Internal View</button>
+                </div>
+                <div class="pc-image" id="pcImage">
+                    <!-- PC visualization will be shown here -->
+                </div>
+                <div class="controls">
+                    <div class="color-picker">
+                        <label>Case Color:</label>
+                        <input type="color" id="caseColor" value="#2c3e50" onchange="updateCaseColor(this.value)">
+                    </div>
+                    <div class="rgb-toggle">
+                        <label>RGB Lights:</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rgbToggle" onchange="toggleRGB()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="color-picker" id="rgbColorPicker" style="display: none;">
+                        <label>RGB Color:</label>
+                        <input type="color" id="rgbColor" value="#00ff00" onchange="updateRGBColor(this.value)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Current view state
+        let currentView = 'front';
+        
+        // DOM Elements
+        const pcImage = document.getElementById('pcImage');
+        const rgbLights = document.getElementById('rgbLights');
+        const rgbToggle = document.getElementById('rgbToggle');
+        const rgbColorPicker = document.getElementById('rgbColorPicker');
+        
+        // Update case color
+        function updateCaseColor(color) {
+            document.documentElement.style.setProperty('--case-color', color);
+        }
+        
+        // Toggle RGB lights
+        function toggleRGB() {
+            const isChecked = rgbToggle.checked;
+            rgbLights.style.display = isChecked ? 'block' : 'none';
+            rgbColorPicker.style.display = isChecked ? 'flex' : 'none';
+            
+            if (isChecked) {
+                rgbLights.style.animation = 'rgbFlow 3s linear infinite';
+            } else {
+                rgbLights.style.animation = 'none';
+            }
+        }
+        
+        // Update RGB color
+        function updateRGBColor(color) {
+            document.documentElement.style.setProperty('--rgb-color', color);
+            rgbLights.style.background = `linear-gradient(90deg, ${color}00, ${color}ff, ${color}00)`;
+        }
+        
+        // Change view
+        function changeView(view) {
+            currentView = view;
+            
+            // Update active button
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Clear previous content
+            pcImage.innerHTML = '';
+            
+            // Create image element
+            const img = document.createElement('img');
+            img.alt = 'PC ' + view + ' view';
+            
+            // Set image source based on view
+            const images = {
+                'front': 'images/pc-front.jpg',
+                'side': 'images/pc-side.jpg',
+                'inside': 'images/pc-inside.jpg'
+            };
+            
+            // Use local image if available, otherwise use placeholder
+            const imageUrl = images[view] || `https://via.placeholder.com/800x500/2c3e50/ffffff?text=PC+${view}+View`;
+            img.src = imageUrl;
+            img.alt = `PC ${view} view`;
+            
+            // Add loading state
+            const loadingText = document.createElement('div');
+            loadingText.textContent = 'Loading ' + view + ' view...';
+            loadingText.style.color = '#666';
+            loadingText.style.textAlign = 'center';
+            loadingText.style.padding = '20px';
+            pcImage.appendChild(loadingText);
+            
+            // When image loads, replace loading text with the image
+            img.onload = function() {
+                pcImage.innerHTML = '';
+                pcImage.appendChild(img);
+            };
+            
+            // In case image fails to load
+            img.onerror = function() {
+                const errorText = document.createElement('div');
+                errorText.textContent = 'Failed to load ' + view + ' view. Please check your internet connection.';
+                errorText.style.color = '#e74c3c';
+                errorText.style.textAlign = 'center';
+                errorText.style.padding = '20px';
+                pcImage.innerHTML = '';
+                pcImage.appendChild(errorText);
+            }
+        }
+        
+        // Create a simple canvas-based PC image as fallback
+        function createFallbackPCImage(view) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 800;
+            canvas.height = 500;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw a simple PC representation
+            ctx.fillStyle = '#2c3e50';
+            ctx.fillRect(0, 0, 800, 500);
+            
+            // Add some PC-like shapes
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(50, 50, 700, 400); // Main case
+            
+            if (view === 'front') {
+                // Front view elements
+                ctx.fillStyle = '#333';
+                ctx.fillRect(100, 100, 200, 100); // Drive bays
+                ctx.fillRect(350, 100, 300, 200); // Motherboard area
+                ctx.fillStyle = '#00ff00';
+                ctx.fillRect(400, 150, 200, 100); // RGB area
+            } else if (view === 'side') {
+                // Side view with window
+                ctx.strokeStyle = '#00ffff';
+                ctx.lineWidth = 5;
+                ctx.strokeRect(100, 100, 600, 300);
+                ctx.fillStyle = 'rgba(0, 200, 255, 0.1)';
+                ctx.fillRect(100, 100, 600, 300);
+            } else {
+                // Internal view
+                ctx.fillStyle = '#333';
+                ctx.fillRect(150, 100, 200, 200); // PSU
+                ctx.fillRect(400, 100, 250, 150);  // Motherboard
+                ctx.fillStyle = '#00ff00';
+                ctx.fillRect(450, 120, 50, 50);    // RGB component
+            }
+            
+            // Add view label
+            ctx.fillStyle = '#fff';
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`PC ${view} View (Generated)`, 400, 50);
+            
+            return canvas.toDataURL();
+        }
+        
+        // Check if promo is already unlocked
+        function checkPromoStatus() {
+            return localStorage.getItem('pcVisualizationUnlocked') === 'true';
+        }
+
+        // Show/hide promo modal
+        function showPromoModal(show) {
+            const modal = document.getElementById('promoModal');
+            modal.style.display = show ? 'flex' : 'none';
+        }
+
+        // Initialize promo code verification
+        function initPromoCode() {
+            const promoCodeInput = document.getElementById('promoCode');
+            const submitButton = document.getElementById('submitPromo');
+            const messageElement = document.getElementById('promoMessage');
+
+            submitButton.addEventListener('click', () => {
+                if (promoCodeInput.value === '555') {
+                    localStorage.setItem('pcVisualizationUnlocked', 'true');
+                    messageElement.textContent = 'Success! Press W to view AI images.';
+                    messageElement.style.color = 'green';
+                    setTimeout(() => showPromoModal(false), 1500);
+                } else {
+                    messageElement.textContent = 'Invalid code. Try again.';
+                    messageElement.style.color = 'red';
+                }
+            });
+
+            // Show modal if not already unlocked
+            if (!checkPromoStatus()) {
+                showPromoModal(true);
+            }
+        }
+
+        // Handle W key press for AI image
+        function handleKeyPress(e) {
+            if (e.key.toLowerCase() === 'w' && checkPromoStatus()) {
+                const container = document.getElementById('aiImageContainer');
+                const img = document.getElementById('aiPcImage');
+                
+                // Toggle visibility
+                if (container.style.display === 'block') {
+                    container.style.display = 'none';
+                } else {
+                    // You would replace this with your actual AI image generation/loading logic
+                    // For now, we'll use a placeholder or the existing visualization
+                    container.style.display = 'block';
+                    // In a real implementation, you would call your AI image generation here
+                    // For now, we'll just show a message
+                    img.src = 'https://via.placeholder.com/800x600/2c3e50/ffffff?text=AI+PC+Visualization';
+                }
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initPromoCode();
+            document.addEventListener('keypress', handleKeyPress);
+            // Set initial view
+            const initialView = 'front';
+            // Create fallback images if local files don't load
+            ['front', 'side', 'inside'].forEach(view => {
+                const img = new Image();
+                img.onerror = function() {
+                    // If image fails to load, generate a fallback
+                    const fallback = createFallbackPCImage(view);
+                    document.querySelectorAll(`.view-btn[onclick*="${view}"]`).forEach(btn => {
+                        btn.onclick = function() {
+                            const img = document.querySelector('.pc-image img');
+                            if (img) {
+                                img.src = fallback;
+                                img.alt = `PC ${view} view (fallback)`;
+                            }
+                            changeView.call(this, view);
+                        };
+                    });
+                };
+                // Try to load the image to trigger the onerror if it fails
+                img.src = `images/pc-${view}.jpg`;
+            });
+            
+            // Manually trigger the first view change
+            const event = { target: document.querySelector(`.view-btn[onclick*="${initialView}"]`) };
+            changeView.call(event, initialView);
+            toggleRGB(); // Initialize RGB state
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,457 @@
+/* Base Styles */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
+:root {
+    --primary-color: #51260c;
+    --secondary-color: #257d9b;
+    --text-color: #000000;
+    --light-gray: #663737;
+    --border-color: #746e6e;
+    --success-color: #69450b;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+body {
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: #f9f9f9;
+    padding: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-top: 30px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+/* Promo Code Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10000; /* Increased z-index to ensure it's on top */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modal.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Ensure modal is clickable and interactive */
+.modal * {
+    box-sizing: border-box;
+}
+
+/* Make sure modal content is above the overlay */
+.modal-content {
+    position: relative;
+    z-index: 10001;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin: 0 auto;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    text-align: center;
+    padding: 20px;
+}
+
+.loading-spinner .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+.loading-spinner p {
+    color: #666;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* AI Image Result */
+.ai-image-result {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.ai-image-result img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Promo Message */
+.promo-message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.promo-message.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.promo-message.error {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.modal h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+.modal input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 15px 0;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+#submitPromo {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#submitPromo:hover {
+    background-color: #3a1a06;
+}
+
+#cancelPromo {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+#cancelPromo:hover {
+    background-color: #e0e0e0;
+}
+
+.promo-message {
+    margin-top: 15px;
+    min-height: 20px;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.promo-message.success {
+    color: #27ae60;
+}
+
+/* AI Visualization Styles */
+.generate-ai-btn {
+    display: block;
+    margin: 25px auto;
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #4a6cf7, #2541b2);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(74, 108, 247, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.generate-ai-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 108, 247, 0.4);
+}
+
+.generate-ai-btn:active {
+    transform: translateY(0);
+}
+
+.generate-ai-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.ai-image-result {
+    margin: 20px auto;
+    max-width: 800px;
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    display: none;
+}
+
+.ai-image-result img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    margin: 15px 0;
+    border: 1px solid #eaeaea;
+    transition: transform 0.3s ease;
+}
+
+.ai-image-result img:hover {
+    transform: scale(1.02);
+}
+
+.ai-prompt {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #4a6cf7;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Form Styles */
+.form-container {
+    background: var(--secondary-color);
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+select, input, button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+select[multiple] {
+    min-height: 180px;
+    padding: 8px;
+    background-color: #fff;
+    border: 2px solid var(--secondary-color);
+    border-radius: 6px;
+}
+
+select[multiple] option {
+    padding: 8px 12px;
+    margin: 2px 0;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+select[multiple] option:checked {
+    background-color: var(--secondary-color);
+    color: white;
+    font-weight: 500;
+}
+
+.select-hint {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.keyboard-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+small {
+    color: #666;
+    font-size: 0.85em;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #3a5bd9;
+}
+
+/* Result Styles */
+.result-container {
+    background: white;
+    border-radius: 8px;
+    padding: 25px;
+    border: 1px solid var(--border-color);
+}
+
+.result-container h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.build-details {
+    margin-bottom: 20px;
+}
+
+.part-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.part-item:last-child {
+    border-bottom: none;
+}
+
+.total-cost {
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: right;
+    margin: 20px 0;
+    color: var(--primary-color);
+}
+
+.build-link {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.build-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.build-link a:hover {
+    text-decoration: underline;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        margin-top: 10px;
+    }
+    
+    .form-container {
+        padding: 15px;
+    }
+    
+    .btn-primary {
+        padding: 10px 15px;
+    }
+}

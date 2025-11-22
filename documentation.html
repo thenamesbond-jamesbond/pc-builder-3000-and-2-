@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game PC Builder - Architecture Documentation</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --text: #333;
+            --border: #bdc3c7;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary);
+            margin-top: 2rem;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .diagram {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin: 2rem 0;
+            min-height: 300px;
+        }
+        
+        .tech-stack, .api-section {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        pre {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        
+        .endpoint {
+            background: white;
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .endpoint-method {
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .get { background-color: #61affe; }
+        .post { background-color: #49cc90; }
+        .put { background-color: #fca130; }
+        .delete { background-color: #f93e3e; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Game PC Builder</h1>
+        <p>Architecture & API Documentation</p>
+    </header>
+
+    <div class="container">
+        <h2>1. Application Overview</h2>
+        <p>The Game PC Builder is a web application that helps users find optimal PC builds for popular games based on their budget. The application provides component recommendations, pricing in pounds, and direct purchase links.</p>
+        
+        <div class="tech-stack">
+            <h3>Technology Stack</h3>
+            <ul>
+                <li><strong>Frontend:</strong> HTML5, CSS3, JavaScript (ES6+)</li>
+                <li><strong>Styling:</strong> Custom CSS with CSS Variables</li>
+                <li><strong>Build Tools:</strong> None (Vanilla JS)</li>
+                <li><strong>Deployment:</strong> Static file hosting</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>2. System Architecture</h2>
+        
+        <div class="diagram">
+            <div class="mermaid">
+                graph TD
+                    A[User] -->|Interacts with| B[Frontend]
+                    B -->|Fetches data| C[Component Database]
+                    B -->|Generates| D[Build Recommendations]
+                    B -->|Provides| E[Purchase Links]
+                    
+                    subgraph Frontend
+                        B1[HTML/CSS/JS] --> B2[Game Selection]
+                        B1 --> B3[Budget Input]
+                        B1 --> B4[Build Generator]
+                        B1 --> B5[Results Display]
+                    end
+                    
+                    subgraph Data
+                        C1[CPU Options]
+                        C2[GPU Options]
+                        C3[RAM Options]
+                        C4[Storage Options]
+                        C5[PSU Options]
+                        C6[Case Options]
+                    end
+                    
+                    C1 & C2 & C3 & C4 & C5 & C6 --> C
+            </div>
+        </div>
+        
+        <h3>Key Components</h3>
+        <ul>
+            <li><strong>User Interface:</strong> Responsive design for all device sizes</li>
+            <li><strong>Component Database:</strong> Local JSON structure with pricing in GBP</li>
+            <li><strong>Build Engine:</strong> Algorithm that selects optimal components based on game requirements and budget</li>
+            <li><strong>Game Optimizations:</strong> Specific performance profiles for each supported game</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h2>3. Data Flow</h2>
+        
+        <div class="diagram">
+            <div class="mermaid">
+                sequenceDiagram
+                    participant User
+                    participant UI as User Interface
+                    participant BE as Build Engine
+                    participant DB as Component DB
+                    
+                    User->>UI: Selects Game & Budget
+                    UI->>BE: Game Type, Budget
+                    BE->>DB: Request Components
+                    DB-->>BE: Return Component Data
+                    BE->>BE: Calculate Optimal Build
+                    BE-->>UI: Recommended Build
+                    UI->>User: Display Results
+            </div>
+        </div>
+        
+        <h3>Process Flow</h3>
+        <ol>
+            <li>User selects a game and sets their budget in pounds</li>
+            <li>Application loads the appropriate optimization profile for the selected game</li>
+            <li>Build engine selects components based on budget and game requirements</li>
+            <li>Results are displayed with component details and purchase links</li>
+        </ol>
+    </div>
+
+    <div class="container">
+        <h2>4. Game Optimization Profiles</h2>
+        <p>Each game has specific optimization weights for different components:</p>
+        
+        <div class="diagram">
+            <div class="mermaid">
+                pie title Component Weights by Game Type
+                    "CPU-Intensive (e.g., Minecraft)" : 40
+                    "GPU-Intensive (e.g., Warzone)" : 30
+                    "Balanced (e.g., Fortnite)" : 30
+            </div>
+        </div>
+        
+        <h3>Example Optimization Weights</h3>
+        <pre><code>{
+  "fortnite": {
+    "budget": { "gpuWeight": 1.2, "cpuWeight": 0.9, "ramWeight": 1.0 },
+    "mid": { "gpuWeight": 1.3, "cpuWeight": 1.0, "ramWeight": 1.0 },
+    "high": { "gpuWeight": 1.4, "cpuWeight": 1.1, "ramWeight": 1.0 }
+  },
+  "minecraft": {
+    "budget": { "gpuWeight": 0.7, "cpuWeight": 1.4, "ramWeight": 1.2 },
+    "mid": { "gpuWeight": 0.8, "cpuWeight": 1.3, "ramWeight": 1.3 },
+    "high": { "gpuWeight": 1.0, "cpuWeight": 1.2, "ramWeight": 1.2 }
+  }
+}</code></pre>
+    </div>
+
+    <div class="container">
+        <h2>5. API Integration</h2>
+        
+        <div class="api-section">
+            <h3>Component Data Structure</h3>
+            <pre><code>{
+  "cpu": [
+    {
+      "name": "AMD Ryzen 5 5600G",
+      "price": 159,
+      "url": "https://example.com/cpu/ryzen5"
+    }
+  ],
+  "gpu": [
+    {
+      "name": "NVIDIA RTX 3060 Ti",
+      "price": 399,
+      "url": "https://example.com/gpu/rtx3060ti"
+    }
+  ]
+  // ... other components
+}</code></pre>
+        </div>
+        
+        <h3>Build Generation Endpoint</h3>
+        <div class="endpoint">
+            <div>
+                <span class="endpoint-method get">GET</span>
+                <code>/api/build?game=:game&budget=:budget</code>
+            </div>
+            <p>Generates a PC build based on the specified game and budget.</p>
+            
+            <h4>Parameters</h4>
+            <ul>
+                <li><code>game</code> (required): Game identifier (e.g., 'fortnite', 'lol')</li>
+                <li><code>budget</code> (required): Budget in pounds (e.g., 800)</li>
+            </ul>
+            
+            <h4>Response</h4>
+            <pre><code>{
+  "success": true,
+  "build": {
+    "cpu": { "name": "...", "price": 159, "url": "..." },
+    "gpu": { "name": "...", "price": 399, "url": "..." },
+    // ... other components
+  },
+  "total": 1200,
+  "currency": "GBP"
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>6. Future Enhancements</h2>
+        <ul>
+            <li>User accounts to save builds</li>
+            <li>Price comparison across multiple retailers</li>
+            <li>Performance benchmarks for different games</li>
+            <li>Build sharing functionality</li>
+            <li>More detailed component specifications</li>
+        </ul>
+    </div>
+
+    <script>
+        // Initialize Mermaid diagrams
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                securityLevel: 'loose',
+                flowchart: {
+                    useMaxWidth: false,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    primaryColor: '#3498db',
+                    primaryTextColor: '#fff',
+                    primaryBorderColor: '#2980b9',
+                    lineColor: '#bdc3c7',
+                    secondaryColor: '#e74c3c',
+                    tertiaryColor: '#2ecc71'
+                }
+            });
+        });
+    </script>
+</body>
+</html>
