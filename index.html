@@ -17,8 +17,9 @@
         <main>
             <div class="form-container">
                 <div class="form-group">
-                    <label for="game">Select Game:</label>
-                    <select id="game" class="form-control">
+                    <label for="game">Select Game(s):</label>
+                    <div class="hint">Hold Ctrl (Windows/Linux) or Cmd (Mac) to select multiple games (1-4)</div>
+                    <select id="game" class="form-control" multiple size="8" style="height: auto;">
                         <optgroup label="Battle Royale & FPS">
                             <option value="fortnite">Fortnite</option>
                             <option value="call-of-duty-warzone">Call of Duty: Warzone</option>
@@ -126,6 +127,7 @@
                             <option value="among-us">Among Us</option>
                         </optgroup>
                     </select>
+                    <div id="selected-games" class="selected-games"></div>
                 </div>
 
                 <div class="form-group">

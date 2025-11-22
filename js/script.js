@@ -561,6 +561,48 @@ const gameOptimizations = {
 // DOM Elements
 const gameSelect = document.getElementById('game');
 const budgetInput = document.getElementById('budget');
+const selectedGamesContainer = document.getElementById('selected-games');
+
+// Track selected games
+let selectedGames = [];
+
+// Update selected games display
+function updateSelectedGames() {
+    selectedGames = Array.from(gameSelect.selectedOptions).map(option => option.value);
+    
+    // Update the display
+    selectedGamesContainer.innerHTML = '';
+    if (selectedGames.length > 0) {
+        selectedGamesContainer.innerHTML = '<strong>Selected Games:</strong> ';
+        selectedGames.forEach(gameId => {
+            const option = gameSelect.querySelector(`option[value="${gameId}"]`);
+            if (option) {
+                const tag = document.createElement('span');
+                tag.className = 'selected-game-tag';
+                tag.textContent = option.textContent;
+                
+                // Add remove button
+                const removeBtn = document.createElement('span');
+                removeBtn.className = 'remove-game';
+                removeBtn.innerHTML = ' &times;';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    option.selected = false;
+                    updateSelectedGames();
+                };
+                
+                tag.appendChild(removeBtn);
+                selectedGamesContainer.appendChild(tag);
+            }
+        });
+    }
+    
+    // Update the build button state
+    buildBtn.disabled = selectedGames.length === 0 || selectedGames.length > 4;
+}
+
+// Event listener for game selection
+gameSelect.addEventListener('change', updateSelectedGames);
 const buildBtn = document.getElementById('build-btn');
 const resultDiv = document.getElementById('result');
 const buildDetails = document.getElementById('build-details');
@@ -572,9 +614,51 @@ document.addEventListener('DOMContentLoaded', () => {
     buildBtn.addEventListener('click', generateBuild);
 });
 
+// Calculate combined optimizations for multiple games
+function getCombinedOptimizations(gameIds, tier) {
+    // Start with default weights
+    const combined = {
+        cpuWeight: 1.0,
+        gpuWeight: 1.0,
+        ramWeight: 1.0
+    };
+    
+    // Sum up weights from all selected games
+    let count = 0;
+    gameIds.forEach(gameId => {
+        const gameOpt = gameOptimizations[gameId]?.[tier];
+        if (gameOpt) {
+            combined.cpuWeight = Math.max(combined.cpuWeight, gameOpt.cpuWeight || 1.0);
+            combined.gpuWeight = Math.max(combined.gpuWeight, gameOpt.gpuWeight || 1.0);
+            combined.ramWeight = Math.max(combined.ramWeight, gameOpt.ramWeight || 1.0);
+            count++;
+        }
+    });
+    
+    // If we have multiple games, slightly increase weights to ensure we meet all requirements
+    if (count > 1) {
+        const scaleFactor = 1 + (0.1 * (count - 1)); // Scale up based on number of games
+        combined.cpuWeight *= scaleFactor;
+        combined.gpuWeight *= scaleFactor;
+        combined.ramWeight *= scaleFactor;
+    }
+    
+    return combined;
+}
+
 // Generate PC build based on user input
 function generateBuild() {
-    const game = gameSelect.value;
+    // Validate game selection
+    if (selectedGames.length === 0) {
+        alert('Please select at least one game.');
+        return;
+    }
+    
+    if (selectedGames.length > 4) {
+        alert('Please select a maximum of 4 games.');
+        return;
+    }
+    
     const budget = parseInt(budgetInput.value);
     const maxAttempts = 20; // Maximum number of attempts to find a build within budget
     let attempts = 0;
@@ -590,8 +674,8 @@ function generateBuild() {
         tier = 'high';
     }
     
-    // Get game-specific optimizations
-    const optimizations = gameOptimizations[game][tier];
+    // Get combined optimizations for all selected games
+    const optimizations = getCombinedOptimizations(selectedGames, tier);
     
     // Try to generate a build within £50 of the budget
     do {
@@ -681,7 +765,7 @@ function generateBuild() {
     }
     
     // Display results
-    displayBuild(build, total, game);
+    displayBuild(build, total, selectedGames);
 }
 
 // Get the optimal part based on budget and optimizations
@@ -711,64 +795,62 @@ function getOptimalPart(partType, tier, weight, budget) {
 }
 
 // Display the generated build
-function displayBuild(build, total, game) {
+function displayBuild(build, total, games) {
     // Clear previous build
     buildDetails.innerHTML = '';
+    
+    // Get game names
+    const gameNames = games.map(gameId => {
+        const option = gameSelect.querySelector(`option[value="${gameId}"]`);
+        return option ? option.textContent : gameId;
+    });
+    
+    // Start building the HTML
+    let html = `
+        <div class="build-header">
+            <h3>Optimized for ${games.length > 1 ? games.length + ' Games' : '1 Game'}</h3>
+            <p>Selected Games: ${gameNames.join(', ')}</p>
+            <p>Here's your custom PC build recommendation that will work for all selected games:</p>
+        </div>
+        <div class="build-components">
+    `;
     
     // Add each part to the build details
     for (const [partType, part] of Object.entries(build)) {
         if (partType === 'case') continue; // Skip case for now
         
-        const partElement = document.createElement('div');
-        partElement.className = 'part-item';
-        
-        const partName = document.createElement('span');
-        partName.className = 'part-name';
-        partName.textContent = `${partType.toUpperCase()}: `;
-        
-        const partValue = document.createElement('span');
-        partValue.className = 'part-value';
-        
-        if (part.url) {
-            const link = document.createElement('a');
-            link.href = part.url;
-            link.textContent = part.name;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            partValue.appendChild(link);
-        } else {
-            partValue.textContent = part.name;
-        }
-        
-        const partPrice = document.createElement('span');
-        partPrice.className = 'part-price';
-        partPrice.textContent = `$${part.price}`;
-        
-        partElement.appendChild(partName);
-        partElement.appendChild(partValue);
-        partElement.appendChild(partPrice);
-        
-        buildDetails.appendChild(partElement);
+        html += `
+            <div class="part-item">
+                <span class="part-type">${partType.toUpperCase()}:</span>
+                <span class="part-name">${part.name}</span>
+                <span class="part-price">£${part.price}</span>
+                ${part.url ? `<a href="${part.url}" target="_blank" class="part-link">View on Amazon</a>` : ''}
+            </div>
+        `;
     }
     
-    // Add case separately to keep the layout clean
-    const caseElement = document.createElement('div');
-    caseElement.className = 'part-item';
-    caseElement.innerHTML = `
-        <span class="part-name">CASE: </span>
-        <span class="part-value">${build.case.name} (compatible with your components)</span>
-        <span class="part-price">$${build.case.price}</span>
+    // Close the build-components div and add case
+    html += `
+        </div>
+        <div class="case-item">
+            <span class="part-type">CASE:</span>
+            <span class="part-name">${build.case.name} (compatible with your components)</span>
+            <span class="part-price">£${build.case.price}</span>
+            ${build.case.url ? `<a href="${build.case.url}" target="_blank" class="part-link">View on Amazon</a>` : ''}
+        </div>
     `;
-    buildDetails.appendChild(caseElement);
+    
+    // Set the build details HTML
+    buildDetails.innerHTML = html;
     
     // Display total cost
-    totalCost.textContent = `Total: $${total}`;
+    totalCost.textContent = `Total: £${total}`;
     
-    // Generate PCPartPicker link
-    const gameName = game === 'fortnite' ? 'Fortnite' : 'League of Legends';
-    const message = `Here's a great ${gameName} build for $${budgetInput.value} that will run the game smoothly at high settings!`;
+    // Generate share text with all selected games
+    const gameList = gameNames.join(' and ');
+    const message = `Here's a great PC build for ${gameList} for £${budgetInput.value} that will run these games smoothly at high settings!`;
     
-    // Simple URL encoding for PCPartPicker (note: this is a simplified version)
+    // Build parts list for sharing
     const partsList = [
         `CPU: ${build.cpu.name}`,
         `GPU: ${build.gpu.name}`,
@@ -786,17 +868,11 @@ function displayBuild(build, total, game) {
         <p>Share your build: 
             <a href="${twitterUrl}" target="_blank" rel="noopener noreferrer">Tweet this build</a>
         </p>
-        <p>For more detailed compatibility checking and pricing, visit: 
-            <a href="https://pcpartpicker.com/list/" target="_blank" rel="noopener noreferrer">PCPartPicker</a>
-        </p>
     `;
     
-    // Show results
+    // Show result section
     resultDiv.classList.remove('hidden');
     resultDiv.scrollIntoView({ behavior: 'smooth' });
-    
-    // Initialize AI Image Generation
-    initAIImageGeneration(build, total, game);
 }
 
 // Color Picker Debug Mode
